@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta
+
 from airflow import DAG
-from conveyor.operators import ConveyorSparkSubmitOperatorV2, ConveyorContainerOperatorV2
+from conveyor.operators import (
+    ConveyorContainerOperatorV2,
+    ConveyorSparkSubmitOperatorV2,
+)
 
 default_args = {
     "owner": "airflow",
@@ -14,7 +18,7 @@ default_args = {
 }
 
 with DAG(
-    "docker_operator_dag",
+    "docker_operator_dag_<name>",
     default_args=default_args,
     catchup=False,
 ) as dag:

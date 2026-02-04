@@ -4,22 +4,22 @@
     "dockerfile": "../.codespaces.dockerfile"
   },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
   "remoteUser": "vscode",
   "containerUser": "vscode",
-  "postStartCommand": "uv sync --frozen",
+  "postStartCommand": {"uv": "uv sync --frozen", "acl": "sudo setfacl -m d:other:rwx /tmp"},
   "workspaceFolder": "/workspace/capstone-llm",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/capstone-llm,type=bind",
-  "forwardPorts": [5555, 8080],
+  "forwardPorts": [5555, 80],
   "portsAttributes": {
     "5555": {
       "label": "Port 5555",
       "onAutoForward": "ignore",
       "elevateIfNeeded": true
     },
-    "8080": {
-      "label": "Port 8080",
+    "80": {
+      "label": "Port 80",
       "onAutoForward": "openBrowser",
       "elevateIfNeeded": true
     }
