@@ -3,11 +3,39 @@ import logging
 from pyspark.sql import SparkSession
 from capstonellm.common.catalog import llm_bucket
 from capstonellm.common.spark import ClosableSparkSession
+from pyspark.sql.functions import explode
 
 logger = logging.getLogger(__name__)
 
 def clean(spark: SparkSession, environment: str, tag: str):
-    pass
+    df_q = spark.read.json("questions.json")
+    df_q = spark.read.json("s3a://dataminded-academy-capstone-llm-data-us/input/dbt/questions.json")
+    df_q_selected = (
+        df_q.select(explode("items").alias("q"))
+        .select("q.question_id","q.title","q.body")
+        .withColumnsRenamed(
+            {"q.body" : "Questions"}))
+    
+    df_a = spark.read.json("answers.json")
+    df_a = spark.read.json("s3a://dataminded-academy-capstone-llm-data-us/input/dbt/answers.json")
+    df_a_selected = (
+        df_a.select(explode("items").alias("a"))
+        .select("a.question_id","a.body")
+        .withColumnsRenamed(
+            {"a.body" : "Answers"}))
+
+    df_joined = df_q_selected.join(
+        df_a_selected,
+        on="question_id",
+        how="inner")
+
+    # df_q.printSchema()
+    # df_a.printSchema()
+    # df_q_selected.show(5)
+    # df_a_selected.show(5)
+    df_joined.show(5)
+
+    return 0
 
 def main():
     parser = argparse.ArgumentParser(description="capstone_llm")
@@ -40,3 +68,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
