@@ -3,7 +3,7 @@ import logging
 from pyspark.sql import SparkSession
 from capstonellm.common.catalog import llm_bucket
 from capstonellm.common.spark import ClosableSparkSession
-from pyspark.sql.functions import explode
+from pyspark.sql.functions import explode, collect_list
 import os
 
 logger = logging.getLogger(__name__)
@@ -37,8 +37,14 @@ def clean(spark: SparkSession, environment: str, tag: str):
     # df_a.printSchema()
     # df_q_selected.show(5)
     # df_a_selected.show(5)
-    df_joined.show(5)
+    # df_joined.show(5)
 
+    df_per_question = (df_joined.
+    groupBy("question_id", "title", "Questions").
+    agg(collect_list("Answers").alias("Answers")))
+
+    df_per_question.show(5)
+    df_per_question.printSchema()
     return 0
 
 def main():
