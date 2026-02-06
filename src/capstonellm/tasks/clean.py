@@ -47,8 +47,8 @@ def clean(spark: SparkSession, environment: str, tag: str):
     df_per_question.printSchema()
 
     (df_per_question.write
-    .json("s3a://dataminded-academy-capstone-llm-data-us/output/cleaned/Ashkin2211/dbt"))
-    
+    .json("s3a://dataminded-academy-capstone-llm-data-us/cleaned/Ashkin2211/dbt"))
+
     return 0
 
 def main():
